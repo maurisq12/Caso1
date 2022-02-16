@@ -66,13 +66,55 @@ CREATE TABLE PlanGobierno(
     REFERENCES Partido(IDPartido)
 )
 
-CREATE TABLE AccionesPorPlan(
-	IDCliente int,
-	IDTelefono int,
-	CONSTRAINT FK_ClienteTC FOREIGN KEY (IDCliente)
-    REFERENCES Cliente(IDCliente),
-	CONSTRAINT FK_TelefonoTC FOREIGN KEY (IDTelefono)
-    REFERENCES Telefono(IDTelefono),
-	PRIMARY KEY (IDCliente,IDTelefono),
-
+CREATE TABLE Accion(
+	IDAccion int IDENTITY(1,1) PRIMARY KEY,
+	Nombre varchar(25),
+	Descripcion varchar(45)
 )
+
+CREATE TABLE AccionesPorPlan(
+	IDAccion int,
+	IDPlan int,
+	CONSTRAINT FK_AccionAXP FOREIGN KEY (IDAccion)
+    REFERENCES Accion(IDAccion),
+	CONSTRAINT FK_PlanAXP FOREIGN KEY (IDPlan)
+    REFERENCES PlanGobierno(IDPlan),
+	PRIMARY KEY (IDAccion,IDPlan)
+)
+
+CREATE TABLE Canton(
+	IDCanton int IDENTITY(1,1) PRIMARY KEY,
+	Nombre varchar(25)
+)
+
+CREATE TABLE Entregable(
+	IDEntregable int IDENTITY(1,1) PRIMARY KEY,
+	Descripcion varchar(45),
+	Fecha date,
+	ValorKPI int,
+	EnteKPI varchar(20)
+)
+
+CREATE TABLE EntregablesPorAccion(
+	IDEntregable int,
+	IDAccion int,
+	CONSTRAINT FK_EntregableEXA FOREIGN KEY (IDEntregable)
+    REFERENCES Entregable(IDEntregable),
+	CONSTRAINT FK_AccionEXA FOREIGN KEY (IDAccion)
+    REFERENCES Accion(IDAccion),
+	PRIMARY KEY (IDEntregable,IDAccion)
+)
+
+CREATE TABLE EntregablesPorCanton(
+	IDEntregable int,
+	IDCanton int,
+	CONSTRAINT FK_EntregableEXC FOREIGN KEY (IDEntregable)
+    REFERENCES Entregable(IDEntregable),
+	CONSTRAINT FK_CantonEXC FOREIGN KEY (IDCanton)
+    REFERENCES Canton(IDCanton),
+	PRIMARY KEY (IDEntregable,IDCanton)
+)
+
+
+
+
