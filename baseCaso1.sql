@@ -1,4 +1,3 @@
-
 CREATE TABLE Tipo(
 	IDTipo int IDENTITY(1,1) PRIMARY KEY,
 	Nombre varchar(20),
@@ -114,6 +113,195 @@ CREATE TABLE EntregablesPorCanton(
     REFERENCES Canton(IDCanton),
 	PRIMARY KEY (IDEntregable,IDCanton)
 )
+GO
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--																				CRUD
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------CRUD TIPO---------------------------------------------------------------------------------
+CREATE PROCEDURE spInsertarTipo @Nombre varchar(20), @Descripcion varchar(50)
+AS
+BEGIN
+	IF(@Nombre is not null and @Descripcion is not null)
+		IF NOT(EXISTS(SELECT Nombre FROM Tipo WHERE Nombre=@Nombre))
+			BEGIN
+				INSERT INTO Tipo(Nombre,Descripcion)
+				VALUES (@Nombre,@Descripcion)
+			END
+		ELSE RAISERROR ( 'El tipo ya se encuentra registrado',1,1)
+	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
+END
+GO
+
+CREATE PROCEDURE spLeerTipo
+AS
+BEGIN
+	SELECT Nombre,Descripcion FROM Tipo
+END
+GO
+
+CREATE PROCEDURE spActualizarTipo @IDTipo int, @Nombre varchar(25), @Descripcion varchar(50)
+AS
+BEGIN 
+	IF(@Nombre is not null and @IDTipo is not null and @Descripcion is not null)
+		IF (EXISTS(SELECT IDTipo FROM Tipo WHERE Nombre=@Nombre))
+			BEGIN
+				UPDATE Tipo set Nombre=@Nombre, Descripcion=@Descripcion WHERE IDTipo=@IDTipo		
+			END
+		ELSE RAISERROR ( 'El tipo no se encuentra registrado',1,1)
+	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
+END	
+GO
+
+CREATE PROCEDURE spEliminarTipo @Nombre varchar(25)  
+AS
+BEGIN
+	DELETE Tipo WHERE Nombre=@Nombre
+END
+GO
+
+------------------------------------------------------------CRUD Provincia---------------------------------------------------------------------------------
+
+CREATE PROCEDURE spInsertarProvincia @Nombre varchar(20), @Numero int
+AS
+BEGIN
+	IF(@Nombre is not null and @Numero is not null)
+		IF NOT(EXISTS(SELECT Nombre FROM Tipo WHERE Nombre=@Nombre))
+			BEGIN
+				INSERT INTO Provincia(Nombre,Numero)
+				VALUES (@Nombre,@Numero)
+			END
+		ELSE RAISERROR ( 'La provincia ya se encuentra registrada',1,1)
+	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
+END
+GO
+
+CREATE PROCEDURE spLeerProvincia
+AS
+BEGIN
+	SELECT Nombre,Numero FROM Provincia
+END
+GO
+
+CREATE PROCEDURE spActualizarProvincia @IDProvincia int, @Nombre varchar(25), @Numero int
+AS
+BEGIN 
+	IF(@Nombre is not null and @IDTipo is not null and @Numero is not null)
+		IF (EXISTS(SELECT IDProvincia FROM Provincia WHERE Nombre=@Nombre))
+			BEGIN
+				UPDATE Provincia set Nombre=@Nombre, Numero=@Numero WHERE IDProvincia=@IDProvincia	
+			END
+		ELSE RAISERROR ( 'La provincia no se encuentra registrada',1,1)
+	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
+END	
+GO
+
+CREATE PROCEDURE spEliminarProvincia @Nombre varchar(25)  
+AS
+BEGIN
+	DELETE Provincia WHERE Nombre=@Nombre
+END
+GO
+
+------------------------------------------------------------CRUD Bio---------------------------------------------------------------------------------
+
+CREATE PROCEDURE spInsertarBio @IDUsuario int,@Nombre varchar(70), @FechaNacimiento date, @Descripcion varchar(75), @IDProvincia int
+AS
+BEGIN
+	IF(@IDUsuario is not null and @Nombre is not null and @FechaNacimiento is not null and @Descripcion is not null and @IDProvincia is not null)
+		IF NOT(EXISTS(SELECT Nombre FROM Tipo WHERE Nombre=@Nombre))
+			BEGIN
+				INSERT INTO Bio(Nombre,Numero)
+				VALUES (@Nombre,@Numero)
+			END
+		ELSE RAISERROR ( 'El bio de este usuario ya se encuentra registrado',1,1)
+	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
+END
+GO
+
+CREATE PROCEDURE spLeerProvincia
+AS
+BEGIN
+	SELECT Nombre,Numero FROM Provincia
+END
+GO
+
+CREATE PROCEDURE spActualizarProvincia @IDProvincia int, @Nombre varchar(25), @Numero int
+AS
+BEGIN 
+	IF(@Nombre is not null and @IDTipo is not null and @Numero is not null)
+		IF (EXISTS(SELECT IDProvincia FROM Provincia WHERE Nombre=@Nombre))
+			BEGIN
+				UPDATE Provincia set Nombre=@Nombre, Numero=@Numero WHERE IDProvincia=@IDProvincia	
+			END
+		ELSE RAISERROR ( 'La provincia no se encuentra registrada',1,1)
+	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
+END	
+GO
+
+CREATE PROCEDURE spEliminarProvincia @Nombre varchar(25)  
+AS
+BEGIN
+	DELETE Provincia WHERE Nombre=@Nombre
+END
+GO
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE PROCEDURE spInsertTipo @Nombre varchar(20), @Descripcion varchar(50)
+AS
+BEGIN
+END
+
+
+
+CREATE PROCEDURE spInsertTipo @Nombre varchar(20), @Descripcion varchar(50)
+AS
+BEGIN
+	IF(@Nombre is not null and @Descripcion is not null)
+		IF NOT(EXISTS(SELECT Nombre FROM Tipo WHERE Nombre=@Nombre))
+			BEGIN
+				
+			END
+		ELSE RAISERROR ( 'La sucursal ya se encuentra registrada',1,1)
+	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
