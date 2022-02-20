@@ -275,7 +275,7 @@ BEGIN
 				INSERT INTO Partido(Nombre,Siglas,Candidato,URLBandera,FechaCreacion,Estado)
 				VALUES (@Nombre,@Siglas,@Candidato,@URLBandera,GETDATE(),1)
 			END
-		ELSE RAISERROR ( 'La provincia ya se encuentra registrada',1,1)
+		ELSE RAISERROR ( 'El partido ya se encuentra registrado',1,1)
 	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
 END
 GO
@@ -375,10 +375,12 @@ AS
 BEGIN
 	IF(@Titulo is not null and @Descripcion is not null and @IDPartido is not null )
 		IF (EXISTS(SELECT Nombre FROM Partido WHERE IDPartido=@IDPartido))
-			BEGIN
-				INSERT INTO PlanGobierno(Titulo,Descripcion,IDPartido)
-				VALUES (@Titulo,@Descripcion,@IDPartido)
-			END
+			IF NOT(EXISTS(SELECT IDPlan FROM PlanGobierno WHERE Titulo=@Titulo))
+				BEGIN
+					INSERT INTO PlanGobierno(Titulo,Descripcion,IDPartido)
+					VALUES (@Titulo,@Descripcion,@IDPartido)
+				END
+			ELSE RAISERROR ('Ya existe un plan con este titulo',1,1)
 		ELSE RAISERROR ('No existe un partido con el ID indicado',1,1)
 	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
 END
@@ -427,10 +429,20 @@ AS
 BEGIN
 	IF(@Descripcion is not null and @IDPlan is not null)
 		IF (EXISTS(SELECT Titulo FROM PlanGobierno WHERE IDPlan=@IDPlan))
-			BEGIN
-				INSERT INTO Accion(Descripcion,IDPlan)
-				VALUES (@Descripcion,@IDPlan)
-			END
+			IF NOT(EXISTS(SELECT IDAccion FROM Accion WHERE @Descripcion=Descripcion and @IDPlan=IDPlan))
+				BEGIN
+					DECLARE @IDAUX1 int
+					DECLARE @TablaAUX table (IDA int)
+
+					INSERT INTO Accion(Descripcion,IDPlan)
+					OUTPUT INSERTED.IDAccion into @TablaAUX
+					VALUES (@Descripcion,@IDPlan)
+					SELECT @IDAUX1=IDA from @TablaAUX
+				
+					INSERT INTO AccionesPorPlan(IDAccion,IDPlan)
+					VALUES (@IDAUX1,@IDPlan)
+				END
+			ELSE RAISERROR ('La acción ya existe',1,1)
 		ELSE RAISERROR ('No existe un plan de gobierno con el ID indicado',1,1)
 	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
 END
@@ -479,10 +491,12 @@ AS
 BEGIN
 	IF(@Nombre is not null and @IDProvincia is not null)
 		IF (EXISTS(SELECT Nombre FROM Provincia WHERE IDProvincia=@IDProvincia))
-			BEGIN
-				INSERT INTO Canton(Nombre,IDProvincia)
-				VALUES (@Nombre,@IDProvincia)
-			END
+			IF NOT(EXISTS(SELECT IDCanton FROM Canton WHERE Nombre=@Nombre))
+				BEGIN
+					INSERT INTO Canton(Nombre,IDProvincia)
+					VALUES (@Nombre,@IDProvincia)
+				END
+			ELSE RAISERROR ('El canton ya se encuentra registrado',1,1)
 		ELSE RAISERROR ('No existe una provincia con el ID indicado',1,1)
 	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
 END
@@ -526,14 +540,23 @@ GO
 
 
 
-CREATE PROCEDURE spInsertarEntregable @Descripcion varchar(45),@Fecha date,@ValorKPI int, @EnteKPI varchar(20), @IDCanton int
+CREATE PROCEDURE spInsertarEntregable @Descripcion varchar(45),@Fecha date,@ValorKPI int, @EnteKPI varchar(20), @IDCanton int, @IDAccion int
 AS
 BEGIN
 	IF(@Descripcion is not null and @Fecha is not null and @ValorKPI is not null and @EnteKPI is not null and @IDCanton is not null)
 		IF NOT(EXISTS(SELECT Fecha FROM Entregable WHERE Descripcion=@Descripcion))
 			BEGIN
+				DECLARE @IDAUX1 int
+				DECLARE @TablaAUX table (IDA int)
+
 				INSERT INTO Entregable(Descripcion,Fecha,ValorKPI,EnteKPI)
+				OUTPUT INSERTED.IDEntregable into @TablaAUX
 				VALUES (@Descripcion,@Fecha,@ValorKPI,@EnteKPI)
+				SELECT @IDAUX1=IDA from @TablaAUX
+				INSERT INTO EntregablesPorAccion(IDAccion,IDEntregable)
+				VALUES(@IDAccion,@IDAUX1)
+				INSERT INTO EntregablesPorCanton(IDCanton,IDEntregable)
+				VALUES(@IDCanton,@IDAUX1)
 			END
 		ELSE RAISERROR ('Ya existe un entregable identico',1,1)
 	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
