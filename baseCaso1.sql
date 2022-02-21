@@ -7,8 +7,7 @@ CREATE TABLE Tipo(
 
 CREATE TABLE Provincia(
 	IDProvincia int IDENTITY(1,1) PRIMARY KEY,
-	Nombre varchar(20),
-	Numero int
+	Nombre varchar(20)
 )
 
 CREATE TABLE Bio(
@@ -24,10 +23,10 @@ CREATE TABLE Bio(
 
 CREATE TABLE Partido(
 	IDPartido int IDENTITY(1,1) PRIMARY KEY,
-	Nombre varchar(30),
+	Nombre varchar(50),
 	Siglas varchar(5),
 	Candidato varchar(50),
-	URLBandera varchar(150),
+	URLBandera varchar(250),
 	FechaCreacion date,
 	Estado int
 )
@@ -164,14 +163,14 @@ GO
 
 ------------------------------------------------------------CRUD Provincia---------------------------------------------------------------------------------
 
-CREATE PROCEDURE spInsertarProvincia @Nombre varchar(20), @Numero int
+CREATE PROCEDURE spInsertarProvincia @Nombre varchar(20)
 AS
 BEGIN
-	IF(@Nombre is not null and @Numero is not null)
+	IF(@Nombre is not null)
 		IF NOT(EXISTS(SELECT Nombre FROM Tipo WHERE Nombre=@Nombre))
 			BEGIN
-				INSERT INTO Provincia(Nombre,Numero)
-				VALUES (@Nombre,@Numero)
+				INSERT INTO Provincia(Nombre)
+				VALUES (@Nombre)
 			END
 		ELSE RAISERROR ( 'La provincia ya se encuentra registrada',1,1)
 	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
@@ -181,17 +180,17 @@ GO
 CREATE PROCEDURE spLeerProvincia
 AS
 BEGIN
-	SELECT Nombre,Numero FROM Provincia
+	SELECT Nombre FROM Provincia
 END
 GO
 
-CREATE PROCEDURE spActualizarProvincia @IDProvincia int, @Nombre varchar(25), @Numero int
+CREATE PROCEDURE spActualizarProvincia @IDProvincia int, @Nombre varchar(25)
 AS
 BEGIN 
-	IF(@Nombre is not null and @IDProvincia is not null and @Numero is not null)
+	IF(@Nombre is not null and @IDProvincia is not null)
 		IF (EXISTS(SELECT IDProvincia FROM Provincia WHERE Nombre=@Nombre))
 			BEGIN
-				UPDATE Provincia set Nombre=@Nombre, Numero=@Numero WHERE IDProvincia=@IDProvincia	
+				UPDATE Provincia set Nombre=@Nombre WHERE IDProvincia=@IDProvincia	
 			END
 		ELSE RAISERROR ( 'La provincia no se encuentra registrada',1,1)
 	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
@@ -266,7 +265,7 @@ GO
 
 
 
-CREATE PROCEDURE spInsertarPartido @Nombre varchar(20), @Siglas varchar(5), @Candidato varchar(50), @URLBandera varchar(150)
+CREATE PROCEDURE spInsertarPartido @Nombre varchar(50), @Siglas varchar(5), @Candidato varchar(50), @URLBandera varchar(250)
 AS
 BEGIN
 	IF(@Nombre is not null and @Siglas is not null and @Candidato is not null and @URLBandera is not null )
@@ -287,7 +286,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE spActualizarPartido @IDPartido int,@Candidato varchar(50)=NULL,@URLBandera varchar(150)=NULL
+CREATE PROCEDURE spActualizarPartido @IDPartido int,@Candidato varchar(50)=NULL,@URLBandera varchar(250)=NULL
 AS
 BEGIN 
 	IF(@IDPartido is not null and @Candidato is not null and @URLBandera is not null)
@@ -570,7 +569,7 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE spActualizarEntregable @IDEntregable int,@Descripcion varchar(45),@Fecha date,@ValorKPI int, @EnteKPI varchar(20)
+CREATE PROCEDURE spActualizarEntregable @IDEntregable int,@Descripcion varchar(45),@Fecha date,@ValorKPI int, @EnteKPI varchar(20),  @IDCanton int
 AS
 BEGIN 
 	IF(@Descripcion is not null and @Fecha is not null and @ValorKPI is not null and @EnteKPI is not null and @IDCanton is not null)
@@ -593,7 +592,164 @@ END
 GO
 
 
--------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------Poblacion de la base-----------------------------------------------------------------------------------------------
+
+spInsertarProvincia 'San Jose'
+GO
+spInsertarProvincia 'Alajuela'
+GO
+spInsertarProvincia 'Cartago'
+GO
+spInsertarProvincia 'Heredia'
+GO
+spInsertarProvincia 'Guanacaste'
+GO
+spInsertarProvincia 'Puntarenas'
+GO
+spInsertarProvincia 'Limon'
+GO
+
+
+
+spInsertarCanton 'Acosta',1
+GO
+spInsertarCanton 'Escazu',1
+GO
+spInsertarCanton 'Tibas',1
+GO
+spInsertarCanton 'Moravia',1
+GO
+spInsertarCanton 'Puriscal',1
+GO
+
+
+spInsertarCanton 'Palmares',2
+GO
+spInsertarCanton 'Sarchi',2
+GO
+spInsertarCanton 'Zarcero',2
+GO
+spInsertarCanton 'Grecia',2
+GO
+spInsertarCanton 'Naranjo',2
+GO
+
+spInsertarCanton 'Oreamuno',3
+GO
+spInsertarCanton 'Jimenez',3
+GO
+spInsertarCanton 'Paraiso',3
+GO
+spInsertarCanton 'Turrialba',3
+GO
+spInsertarCanton 'Cartago',3
+GO
+
+spInsertarCanton 'Barva',4
+GO
+spInsertarCanton 'Belen',4
+GO
+spInsertarCanton 'Flores',4
+GO
+spInsertarCanton 'San Pablo',4
+GO
+spInsertarCanton 'San Rafael',4
+GO
+
+spInsertarCanton 'Bagaces',5
+GO
+spInsertarCanton 'Carrillo',5
+GO
+spInsertarCanton 'Hojancha',5
+GO
+spInsertarCanton 'Liberia',5
+GO
+spInsertarCanton 'Nicoya',5
+GO
+
+spInsertarCanton 'Corredores',6
+GO
+spInsertarCanton 'Esparza',6
+GO
+spInsertarCanton 'Golfito',6
+GO
+spInsertarCanton 'Osa',6
+GO
+spInsertarCanton 'Puntarenas',6
+GO
+
+spInsertarCanton 'Guacimo',7
+GO
+spInsertarCanton 'Limon',7
+GO
+spInsertarCanton 'Matina',7
+GO
+spInsertarCanton 'Pococi',7
+GO
+spInsertarCanton 'Siquirres',7
+GO
+
+
+
+
+
+spInsertarPartido 'Partido Liberacion Nacional','PLN','Jose Maria Figueres','upload.wikimedia.org/wikipedia/commons/a/ad/Bandera_de_Partido_Liberaci%C3%B3n_Nacional.sv'
+GO
+spInsertarPartido 'Partido Nueva Republica','PNR','Fabricio Alvarado','upload.wikimedia.org/wikipedia/commons/thumb/7/72/Bandera_Partido_Nueva_Rep%C3%BAblica_Costa_Rica.svg/1200px-Bandera_Partido_Nueva_Rep%C3%BAblica_Costa_Rica.svg.png'
+GO
+spInsertarPartido 'Partido Progreso Social Democratico','PPSD','Rodrigo Chaves','upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bandera_Partido_Progreso_Social_Democr%C3%A1tico_Costa_Rica.svg/1200px-Bandera_Partido_Progreso_Social_Democr%C3%A1tico_Costa_Rica.svg.png'
+GO
+spInsertarPartido 'Partido Unidad Social Cristiana','PUSC','Linneth Saborio','upload.wikimedia.org/wikipedia/commons/a/ad/Bandera_del_Partido_Unidad_Social_Cristiana.svg'
+GO
+
+spInsertarPlanGobierno 'Gobierno PLN 2022-2026','Planes del gobierno para el proximo gobierno',1
+GO
+spInsertarPlanGobierno 'Gobierno PNR 2022-2026','Planes del gobierno para el proximo gobierno',2
+GO
+spInsertarPlanGobierno 'Gobierno PPSD 2022-2026','Planes del gobierno para el proximo gobierno',3
+GO
+spInsertarPlanGobierno 'Gobierno PUSC 2022-2026','Planes del gobierno para el proximo gobierno',4
+GO
+
+
+spInsertarAccion 'Asfaltado de las calles que llevan a las principales comunidades hacia escuelas y hospitales',1
+GO
+spInsertarAccion 'Expansion de EBAIS en comunidades',1
+GO
+spInsertarAccion 'Ampliar el acueducto metropolitano',1
+GO
+
+spInsertarAccion 'Bono a PYMES de todo el pais para impulsar sus proyectos',2
+GO
+spInsertarAccion 'Establecer estructura de fibra optica en todas las regiones',2
+GO
+spInsertarAccion 'Producir empleos para la poblacion para mejorar la economia',2
+GO
+
+spInsertarAccion 'Educacion bilingue en todas las escuelas del pais',3
+GO
+spInsertarAccion 'Impulsar el uso de la quinta generacion de comunicacion 5G',3
+GO
+spInsertarAccion 'Fortalecer un cuido infantil asequible',3
+GO
+
+spInsertarAccion 'Plan para el desarrollo de poblaciones indigenas',4
+GO
+spInsertarAccion 'Fortalecimiento de la policia nacional',4
+GO
+spInsertarAccion 'Impulso del sector turistico con inversion extranjera directa',4
+GO
+
+
+
+
+
+
+
+
+
+
+
 
 
 
