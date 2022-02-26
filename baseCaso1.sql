@@ -1,3 +1,5 @@
+CREATE DATABASE Aseni;
+
 
 CREATE TABLE Tipo(
 	IDTipo int IDENTITY(1,1) PRIMARY KEY,
@@ -90,7 +92,10 @@ CREATE TABLE Entregable(
 	Descripcion varchar(45),
 	Fecha date,
 	ValorKPI int,
-	EnteKPI varchar(20)
+	EnteKPI varchar(20),
+	IDPartido int,
+	CONSTRAINT FK_PartidoE FOREIGN KEY (IDPartido)
+    REFERENCES Partido(IDPartido)
 )
 
 CREATE TABLE EntregablesPorAccion(
@@ -539,24 +544,26 @@ GO
 
 
 
-CREATE PROCEDURE spInsertarEntregable @Descripcion varchar(45),@Fecha date,@ValorKPI int, @EnteKPI varchar(20), @IDCanton int, @IDAccion int
+CREATE PROCEDURE spInsertarEntregable @Descripcion varchar(45),@Fecha date,@ValorKPI int, @EnteKPI varchar(20), @IDCanton int, @IDAccion int, @IDPartido int
 AS
 BEGIN
-	IF(@Descripcion is not null and @Fecha is not null and @ValorKPI is not null and @EnteKPI is not null and @IDCanton is not null)
+	IF(@Descripcion is not null and @Fecha is not null and @ValorKPI is not null and @EnteKPI is not null and @IDCanton is not null and @IDPartido is not null)
 		IF NOT(EXISTS(SELECT Fecha FROM Entregable WHERE Descripcion=@Descripcion))
-			BEGIN
-				DECLARE @IDAUX1 int
-				DECLARE @TablaAUX table (IDA int)
+			IF(EXISTS(SELECT Partido.Nombre FROM Partido WHERE Partido.IDPartido=@IDPartido))
+				BEGIN
+					DECLARE @IDAUX1 int
+					DECLARE @TablaAUX table (IDA int)
 
-				INSERT INTO Entregable(Descripcion,Fecha,ValorKPI,EnteKPI)
-				OUTPUT INSERTED.IDEntregable into @TablaAUX
-				VALUES (@Descripcion,@Fecha,@ValorKPI,@EnteKPI)
-				SELECT @IDAUX1=IDA from @TablaAUX
-				INSERT INTO EntregablesPorAccion(IDAccion,IDEntregable)
-				VALUES(@IDAccion,@IDAUX1)
-				INSERT INTO EntregablesPorCanton(IDCanton,IDEntregable)
-				VALUES(@IDCanton,@IDAUX1)
-			END
+					INSERT INTO Entregable(Descripcion,Fecha,ValorKPI,EnteKPI,IDPartido)
+					OUTPUT INSERTED.IDEntregable into @TablaAUX
+					VALUES (@Descripcion,@Fecha,@ValorKPI,@EnteKPI,@IDPartido)
+					SELECT @IDAUX1=IDA from @TablaAUX
+					INSERT INTO EntregablesPorAccion(IDAccion,IDEntregable)
+					VALUES(@IDAccion,@IDAUX1)
+					INSERT INTO EntregablesPorCanton(IDCanton,IDEntregable)
+					VALUES(@IDCanton,@IDAUX1)
+				END
+			ELSE RAISERROR ('El partido no se encuentra registrado',1,1)
 		ELSE RAISERROR ('Ya existe un entregable identico',1,1)
 	ELSE RAISERROR ( 'Por favor no inserte valores nulos',1,1)
 END
@@ -619,7 +626,7 @@ spInsertarCanton 'Tibas',1
 GO
 spInsertarCanton 'Moravia',1
 GO
-spInsertarCanton 'Puriscal',1
+--spInsertarCanton 'Puriscal',1
 GO
 
 
@@ -631,7 +638,7 @@ spInsertarCanton 'Zarcero',2
 GO
 spInsertarCanton 'Grecia',2
 GO
-spInsertarCanton 'Naranjo',2
+--spInsertarCanton 'Naranjo',2
 GO
 
 spInsertarCanton 'Oreamuno',3
@@ -642,7 +649,7 @@ spInsertarCanton 'Paraiso',3
 GO
 spInsertarCanton 'Turrialba',3
 GO
-spInsertarCanton 'Cartago',3
+--spInsertarCanton 'Cartago',3
 GO
 
 spInsertarCanton 'Barva',4
@@ -653,7 +660,7 @@ spInsertarCanton 'Flores',4
 GO
 spInsertarCanton 'San Pablo',4
 GO
-spInsertarCanton 'San Rafael',4
+--spInsertarCanton 'San Rafael',4
 GO
 
 spInsertarCanton 'Bagaces',5
@@ -664,7 +671,7 @@ spInsertarCanton 'Hojancha',5
 GO
 spInsertarCanton 'Liberia',5
 GO
-spInsertarCanton 'Nicoya',5
+--spInsertarCanton 'Nicoya',5
 GO
 
 spInsertarCanton 'Corredores',6
@@ -675,7 +682,7 @@ spInsertarCanton 'Golfito',6
 GO
 spInsertarCanton 'Osa',6
 GO
-spInsertarCanton 'Puntarenas',6
+--spInsertarCanton 'Puntarenas',6
 GO
 
 spInsertarCanton 'Guacimo',7
@@ -686,7 +693,7 @@ spInsertarCanton 'Matina',7
 GO
 spInsertarCanton 'Pococi',7
 GO
-spInsertarCanton 'Siquirres',7
+--spInsertarCanton 'Siquirres',7
 GO
 
 
@@ -743,9 +750,162 @@ GO
 
 
 
+spInsertarEntregable 'Asfaltado Calle Acosta','2023-11-11',11,'kilometros',1,1,1
+GO
+spInsertarEntregable 'Asfaltado Calle Zarcero','2023-11-11',11,'kilometros',7,1,1
+GO
+spInsertarEntregable 'Asfaltado Calle Flores','2023-11-11',11,'kilometros',15,1,1
+GO
+spInsertarEntregable 'Asfaltado Calle Liberia','2023-11-11',11,'kilometros',20,1,1
+GO
+spInsertarEntregable 'Asfaltado Calle Matina','2023-11-11',11,'kilometros',27,1,1
+GO
+
+spInsertarEntregable 'Nuevo Ebais en Palmares','2024-1-18',1,'local',5,2,1
+GO
+spInsertarEntregable 'Nuevo Ebais en Bagaces','2024-1-18',1,'local',17,2,1
+GO
+spInsertarEntregable 'Nuevo Ebais en Hojancha','2024-1-18',1,'local',19,2,1
+GO
+spInsertarEntregable 'Nuevo Ebais en Esparza','2024-1-18',1,'local',22,2,1
+GO
+spInsertarEntregable 'Nuevo Ebais en Pococi','2024-1-18',1,'local',28,2,1
+GO
+
+spInsertarEntregable 'Acueducto moderno Tibas','2024-5-18',2,'ciudades',3,3,1
+GO
+spInsertarEntregable 'Acueducto moderno Palmares','2024-5-18',2,'ciudades',5,3,1
+GO
+spInsertarEntregable 'Acueducto moderno Belen','2024-5-18',2,'ciudades',14,3,1
+GO
+spInsertarEntregable 'Acueducto moderno Liberia','2024-5-18',2,'ciudades',20,3,1
+GO
+spInsertarEntregable 'Acueducto moderno Esparza','2024-5-18',2,'ciudades',22,3,1
+GO
+
+spInsertarEntregable 'Bonos PYMEs Acosta','2022-10-25',10000,'dolares',1,4,2
+GO
+spInsertarEntregable 'Bonos PYMEs Tibas','2022-10-25',10000,'dolares',3,4,2
+GO
+spInsertarEntregable 'Bonos PYMEs Belen','2022-10-25',10000,'dolares',14,4,2
+GO
+spInsertarEntregable 'Bonos PYMEs Carrillo','2022-10-25',10000,'dolares',18,4,2
+GO
+spInsertarEntregable 'Bonos PYMEs Hojancha','2022-10-25',10000,'dolares',19,4,2
+GO
+
+spInsertarEntregable 'Instalacion fibra optica Moravia','2023-5-2',5,'estructuras',4,5,2
+GO
+spInsertarEntregable 'Instalacion fibra optica Jimenez','2023-5-2',5,'estructuras',10,5,2
+GO
+spInsertarEntregable 'Instalacion fibra optica Turrialba','2023-5-2',5,'estructuras',12,5,2
+GO
+spInsertarEntregable 'Instalacion fibra optica Golfito','2023-5-2',5,'estructuras',23,5,2
+GO
+spInsertarEntregable 'Instalacion fibra optica Pococi','2023-5-2',5,'estructuras',28,5,2
+GO
+
+spInsertarEntregable 'Producir empleos Escazu','2022-10-24',100,'empleos',2,6,2
+GO
+spInsertarEntregable 'Producir empleos Oreamuno','2022-10-24',100,'empleos',9,6,2
+GO
+spInsertarEntregable 'Producir empleos Paraiso','2022-10-24',100,'empleos',11,6,2
+GO
+spInsertarEntregable 'Producir empleos San Pablo','2022-10-24',100,'empleos',16,6,2
+GO
+spInsertarEntregable 'Producir empleos Golfito','2022-10-24',100,'empleos',23,6,2
+GO
+
+spInsertarEntregable 'Profesores bilingues Tibas','2022-7-10',5,'profesores',3,7,3
+GO
+spInsertarEntregable 'Profesores bilingues Turrialba','2022-7-10',5,'profesores',12,7,3
+GO
+spInsertarEntregable 'Profesores bilingues Flores','2022-7-10',5,'profesores',15,7,3
+GO
+spInsertarEntregable 'Profesores bilingues Carrillo','2022-7-10',5,'profesores',18,7,3
+GO
+spInsertarEntregable 'Profesores bilingues Corredores','2022-7-10',5,'profesores',21,7,3
+GO
+
+spInsertarEntregable 'Tecnologia 5G Zarcero','2025-10-1',2,'antenas',7,8,3
+GO
+spInsertarEntregable 'Tecnologia 5G Liberia','2025-10-1',2,'antenas',20,8,3
+GO
+spInsertarEntregable 'Tecnologia 5G Esparza','2025-10-1',2,'antenas',22,8,3
+GO
+spInsertarEntregable 'Tecnologia 5G Osa','2025-10-1',2,'antenas',24,8,3
+GO
+spInsertarEntregable 'Tecnologia 5G Limon','2025-10-1',2,'antenas',26,8,3
+GO
+
+spInsertarEntregable 'Cuido infantil Sarchi','2022-11-29',2,'centros',6,9,3
+GO
+spInsertarEntregable 'Cuido infantil San Pablo','2022-11-29',2,'centros',16,9,3
+GO
+spInsertarEntregable 'Cuido infantil Liberia','2022-11-29',2,'centros',20,9,3
+GO
+spInsertarEntregable 'Cuido infantil Limon','2022-11-29',2,'centros',26,9,3
+GO
+spInsertarEntregable 'Cuido infantil Matina','2022-11-29',2,'centros',27,9,3
+GO
+
+spInsertarEntregable 'Bonos a indigenas Turrialba','2022-6-15',10,'familias',12,10,4
+GO
+spInsertarEntregable 'Bonos a indigenas Hojancha','2022-6-15',10,'familias',19,10,4
+GO
+spInsertarEntregable 'Bonos a indigenas Osa','2022-6-15',10,'familias',24,10,4
+GO
+spInsertarEntregable 'Bonos a indigenas Guacimo','2022-6-15',10,'familias',25,10,4
+GO
+spInsertarEntregable 'Bonos a indigenas Matina','2022-6-15',10,'familias',27,10,4
+GO
+
+spInsertarEntregable 'Vehiculos Policia Palmares','2024-4-25',3,'vehiculos',5,11,4
+GO
+spInsertarEntregable 'Vehiculos Policia Flores','2024-4-25',3,'vehiculos',15,11,4
+GO
+spInsertarEntregable 'Vehiculos Policia Hojancha','2024-4-25',3,'vehiculos',19,11,4
+GO
+spInsertarEntregable 'Vehiculos Policia Guacimo','2024-4-25',3,'vehiculos',25,11,4
+GO
+spInsertarEntregable 'Vehiculos Policia Limon','2024-4-25',3,'vehiculos',26,11,4
+GO
+
+spInsertarEntregable 'Inyecccion economica Grecia','2025-8-12',50000,'dolares',8,12,4
+GO
+spInsertarEntregable 'Inyecccion economica Carrillo','2025-8-12',50000,'dolares',18,12,4
+GO
+spInsertarEntregable 'Inyecccion economica Liberia','2025-8-12',50000,'dolares',20,12,4
+GO
+spInsertarEntregable 'Inyecccion economica Limon','2025-8-12',50000,'dolares',26,12,4
+GO
+spInsertarEntregable 'Inyecccion economica Pococi','2025-8-12',50000,'dolares',28,12,4
+GO
 
 
 
+
+
+---------------------------------------------------------------------Query 1-----------------------------------------------------------------------------------------------
+
+
+CREATE PROCEDURE spEntregablesPorCanton @CantonSol varchar(30)
+AS
+BEGIN
+	SELECT Partido.IDPartido Partido, Entregable.Descripcion FROM Entregable
+	INNER JOIN EntregablesPorCanton
+	ON EntregablesPorCanton.IDEntregable=Entregable.IDEntregable
+	INNER JOIN Canton
+	ON Canton.IDCanton=EntregablesPorCanton.IDCanton
+	INNER JOIN Partido
+	ON Partido.IDPartido=Entregable.IDPartido
+	WHERE Canton.Nombre=@CantonSol
+	GROUP by Partido.IDPartido, Entregable.Descripcion
+
+END
+GO
+
+spEntregablesPorCanton 'Esparza'
 
 
 

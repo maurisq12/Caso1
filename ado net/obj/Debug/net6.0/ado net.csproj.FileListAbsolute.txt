@@ -1,0 +1,22 @@
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\ado net.exe
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\ado net.deps.json
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\ado net.runtimeconfig.json
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\ado net.dll
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\ado net.pdb
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\ado net.csproj.AssemblyReference.cache
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\ado net.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\ado net.AssemblyInfoInputs.cache
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\ado net.AssemblyInfo.cs
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\ado net.csproj.CoreCompileInputs.cache
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\ado net.dll
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\refint\ado net.dll
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\ado net.pdb
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\ado net.genruntimeconfig.cache
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\ref\ado net.dll
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\System.Data.SqlClient.dll
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\runtimes\win-arm64\native\sni.dll
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\runtimes\win-x64\native\sni.dll
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\runtimes\win-x86\native\sni.dll
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\bin\Debug\net6.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Users\mauri\Desktop\Caso1Bases\Caso1\ado net\obj\Debug\net6.0\ado net.csproj.CopyComplete
