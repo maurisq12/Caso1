@@ -1,4 +1,3 @@
-﻿
 using System;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
@@ -6,31 +5,23 @@ using System.Threading;
 using System.Diagnostics;
 
 
-namespace Aseni{
 
-     public class Program
+
+     public class Query2
     {
-        static void Main(string[] args)
+        static void Maun(string[] args)
         {            
-            
-            //consulta2();           
-
-        }
-
-//-------------------------------------------------------------------------------QUERY 1-----------------------------------------------------------------------------------------
-
-        public static void HilosConsulta1(){
             //Se crean los hilos con un canton diferente cada uno
-            Thread H1 = new Thread(()=>consulta1("'Turrialba'"));
-            Thread H2 = new Thread(()=>consulta1("'Zarcero'"));
-            Thread H3 = new Thread(()=>consulta1("'Limon'"));
-            Thread H4 = new Thread(()=>consulta1("'Flores'"));
-            Thread H5 = new Thread(()=>consulta1("'Palmares'"));
-            Thread H6 = new Thread(()=>consulta1("'Hojancha'"));
-            Thread H7 = new Thread(()=>consulta1("'Belen'"));
-            Thread H8 = new Thread(()=>consulta1("'Tibas'"));
-            Thread H9 = new Thread(()=>consulta1("'Liberia'"));
-            Thread H10 = new Thread(()=>consulta1("'Matina'"));
+            Thread H1 = new Thread(()=>consulta("'Turrialba'"));
+            Thread H2 = new Thread(()=>consulta("'Zarcero'"));
+            Thread H3 = new Thread(()=>consulta("'Limon'"));
+            Thread H4 = new Thread(()=>consulta("'Flores'"));
+            Thread H5 = new Thread(()=>consulta("'Palmares'"));
+            Thread H6 = new Thread(()=>consulta("'Hojancha'"));
+            Thread H7 = new Thread(()=>consulta("'Belen'"));
+            Thread H8 = new Thread(()=>consulta("'Tibas'"));
+            Thread H9 = new Thread(()=>consulta("'Liberia'"));
+            Thread H10 = new Thread(()=>consulta("'Matina'"));
 
 
             //Se comienza a hacer el conteo del tiempo, después de crear los hilos, para sólo contar el tiempo de las consultas de cada hilo
@@ -50,15 +41,17 @@ namespace Aseni{
             H10.Start();
             H10.Join();
 
+
             //Se detiene el tiempo
             tiempo.Stop();
             var tiempoTotal=tiempo.ElapsedMilliseconds;
             Console.WriteLine("Tiempo total del Query 1: "+tiempoTotal+" milisegundos");
+
         }
 
-        public static void consulta1(string Canton){
-            //String de conexión con la base que es, con autenticación de MSSQL. Se pone el POOLING en FALSE para evitar que se use el pool que SqlConnection utiliza por defecto
-            string connectionString = "Server=localhost;Database=Aseni;User Id=sa2;Password=pass;Pooling=false";
+        public static void consulta(string Canton){
+            //String de conexión con la base que es, con autenticación de MSSQL
+            string connectionString = "Server=localhost;Database=Aseni;User Id=sa2;Password=pass;";
 
             // Creo la conexión con el string necesario
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -89,6 +82,5 @@ namespace Aseni{
                     lector.Close();
                 }
             }
-        }
+         }
     }
-}

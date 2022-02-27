@@ -905,9 +905,17 @@ BEGIN
 END
 GO
 
-spEntregablesPorCanton 'Esparza'
 
 
+
+--------------------------------------------------Query 2----------------------------------------------------------------
+
+SELECT Canton.IDCanton CantonNumero, Canton.Nombre Canton, COUNT(*) CantidadEntregables FROM Canton
+INNER JOIN EntregablesPorCanton ON EntregablesPorCanton.IDCanton=Canton.IDCanton
+INNER JOIN Entregable ON Entregable.IDEntregable=EntregablesPorCanton.IDEntregable
+INNER JOIN (SELECT COUNT(*) CantPart FROM Partido) AS aux ON aux.CantPart>0
+GROUP BY Canton.IDCanton, Canton.Nombre, CantPart
+HAVING aux.CantPart/4>= COUNT(DISTINCT Entregable.IDPartido);
 
 
 
