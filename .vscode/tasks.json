@@ -36,6 +36,18 @@
                 "${workspaceFolder}/ado net/ado net.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "typescript/tsconfig.json",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "label": "tsc: build - typescript/tsconfig.json"
         }
     ]
 }
