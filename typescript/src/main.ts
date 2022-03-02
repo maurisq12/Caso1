@@ -1,23 +1,21 @@
-var Connection = require('tedious').Connection;  
-    var config = {  
-        server: 'your_server.database.windows.net',  //update me
-        authentication: {
-            type: 'default',
-            options: {
-                userName: 'your_username', //update me
-                password: 'your_password'  //update me
-            }
-        },
-        options: {
-            // If you are on Microsoft Azure, you need encryption:
-            encrypt: true,
-            database: 'your_database'  //update me
-        }
-    };  
-    var connection = new Connection(config);  
-    connection.on('connect', function(err) {  
-        // If no error, then good to proceed.
-        console.log("Connected");  
-    });
-    
-    connection.connect();
+
+const sql = require('mssql')
+const rest = new (require('rest-mssql-nodejs'))({
+	user: "sa2",
+	password: "pass",
+	server:"localhost",
+	database:"Aseni"
+});
+
+setTimeout(async () => {
+	const resultado= await rest.executeStoredProcedure('spEntregablesPorCanton',null,{
+		CantonSol:'Turrialba'
+	});
+
+	console.log(resultado.data[0]);
+}, 1500);
+
+
+function Query1(){
+	
+}

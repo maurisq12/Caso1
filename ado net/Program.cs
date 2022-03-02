@@ -12,8 +12,8 @@ namespace Aseni{
     {
         static void Main(string[] args)
         {            
-            
-            //consulta2();           
+            HilosConsulta1();
+            HilosConsulta2();           
 
         }
 
@@ -129,8 +129,11 @@ namespace Aseni{
         }
 
         public static void consulta2(){
-            //String de conexión con la base que es, con autenticación de MSSQL. Se pone el POOLING en FALSE para evitar que se use el pool que SqlConnection utiliza por defecto
-            string connectionString = "Server=localhost;Database=Aseni;User Id=sa2;Password=pass;Pooling=false";
+            //String de conexión con la base que es, con autenticación de MSSQL. 
+            string connectionString = "Server=localhost;Database=Aseni;User Id=sa2;Password=pass;";
+            
+            //Aquí configuramos el connection pooling, donde lo activamos y le damos tamaño minimo y maximo.
+            connectionString+="Pooling=true;Min Pool Size=3;Max Pool Size=6";
 
             // Creo la conexión con el string necesario
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -141,12 +144,7 @@ namespace Aseni{
                 using (SqlCommand cmd = new SqlCommand())
                 {
                     cmd.Connection = conn;
-                    cmd.CommandText = "SELECT Canton.IDCanton CantonNumero, Canton.Nombre Canton, COUNT(*) CantidadEntregables FROM Canton"+
-                                      "INNER JOIN EntregablesPorCanton ON EntregablesPorCanton.IDCanton=Canton.IDCanton"+
-                                      "INNER JOIN Entregable ON Entregable.IDEntregable=EntregablesPorCanton.IDEntregable"+
-                                      "INNER JOIN (SELECT COUNT(*) CantPart FROM Partido) AS aux ON aux.CantPart>0"+
-                                      "GROUP BY Canton.IDCanton, Canton.Nombre, CantPart"+
-                                      "HAVING aux.CantPart/4>= COUNT(DISTINCT Entregable.IDPartido);";
+                    cmd.CommandText = "SELECT Canton.IDCanton CantonNumero, Canton.Nombre Canton, COUNT(*) CantidadEntregables FROM Canton INNER JOIN EntregablesPorCanton ON EntregablesPorCanton.IDCanton=Canton.IDCanton INNER JOIN Entregable ON Entregable.IDEntregable=EntregablesPorCanton.IDEntregable INNER JOIN (SELECT COUNT(*) CantPart FROM Partido) AS aux ON aux.CantPart>0 GROUP BY Canton.IDCanton, Canton.Nombre, CantPart HAVING aux.CantPart/4>= COUNT(DISTINCT Entregable.IDPartido);";
 
                     //Se crea un lector, donde se almacenarán los datos que se extraigan en SQL
                     SqlDataReader lector = cmd.ExecuteReader();
